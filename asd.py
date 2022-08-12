@@ -46,7 +46,7 @@ def boq12():
 
     mandal_file=file1+'/'
     print("Grabbed mandal location")
-    print(mandal_file)
+    # print(mandal_file)
     no=0
     os.chdir(mandal_file)
     for info in os.listdir():
@@ -164,6 +164,9 @@ def boq12():
             sheet1[var+'14']=(blo.loc[blo['size_of_ofc']=='144F','Total_cable_length'].sum())/1000
             sheet1[var+'17']=(blo.loc[blo['size_of_ofc']=='96F','Total_cable_length'].sum())/1000
             sheet1[var+'18']=(blo.loc[blo['size_of_ofc']=='48F','Total_cable_length'].sum())/1000
+        except:
+            print("No such Blowing files..")  
+        try:
             a=(drt['Duct_miss_ch_Length']==0)
             b=~(drt['Duct_miss_ch_Length'].astype(str).str.isdigit())
             y=a+b
@@ -175,13 +178,16 @@ def boq12():
             e=y*z
             sheet1[var+'99']=drt.loc[e,'Length'].sum()/1000
             sheet1[var+'22']=sum/1000
+        except:
+            print("No such DRT files..")  
+        try:
             sheet1[var+'23']=(ot['Protect_Dwc'].sum())/1000
             sheet1[var+'24']=(ot['Protect_Gi'].sum())/1000
             sheet1[var+'25']=(ot['Rcc_Chamber'].sum())
             sheet1[var+'26']=(ot['Rcc_Marker'].sum())
 
         except:
-            print("No such files..")    
+            print("No such OT files..")    
         xfile.save(filename="BOQ122.xlsx")
         ##print(duct_laid,dwc_pipe,gi_pipe,route_indicators,joint_chambers)
         no+=1
