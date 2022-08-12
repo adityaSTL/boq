@@ -57,6 +57,7 @@ def boq12():
         blo=Extract.extract_blo(j)
         if len(blo)!=0:
             (blo,joint_closer)=Create_table.create_blo(blo)
+            joint_closer.to_csv('Joint_closure.csv')
 
         #blo.to_csv('blwoing.csv')
         #print("pas printing")
@@ -164,8 +165,19 @@ def boq12():
             sheet1[var+'14']=(blo.loc[blo['size_of_ofc']=='144F','Total_cable_length'].sum())/1000
             sheet1[var+'17']=(blo.loc[blo['size_of_ofc']=='96F','Total_cable_length'].sum())/1000
             sheet1[var+'18']=(blo.loc[blo['size_of_ofc']=='48F','Total_cable_length'].sum())/1000
+
         except:
-            print("No such Blowing files..")  
+            print("No such Blowing files..")
+
+        try:      
+            sheet1[var+'29']=(joint_closer.loc[joint_closer['cha_loop']=='288F','chb_end'].sum())
+            sheet1[var+'32']=(joint_closer.loc[joint_closer['cha_loop']=='144F','chb_end'].sum())
+            sheet1[var+'35']=(joint_closer.loc[joint_closer['cha_loop']=='96F','chb_end'].sum())
+            sheet1[var+'36']=(joint_closer.loc[joint_closer['cha_loop']=='48F','chb_end'].sum())
+            
+        except:
+            print("No such Joint Closure files..")  
+
         try:
             a=(drt['Duct_miss_ch_Length']==0)
             b=~(drt['Duct_miss_ch_Length'].astype(str).str.isdigit())
