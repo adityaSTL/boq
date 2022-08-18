@@ -417,7 +417,7 @@ class Create_table:
             blo.reset_index(drop=True,inplace=True)
             index=[]
             for i in range(len(blo)):
-                if type(blo.loc[i,'S_no'])!=int or type(blo.loc[i,'cab_len'])!=int:
+                if type(blo.loc[i,'S_no'])!=int or type(blo.loc[i,'cab_len'])!=int or type(blo.loc[i,'cab_end'])!=int:
                     index.append(i)
                 # elif type(blo.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_ch_from'])!=int and type(drt.loc[i,'Duct_dam_ch_from'])!=int:
                 #     index.append(i)
