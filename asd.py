@@ -12,7 +12,7 @@ from openpyxl_image_loader import SheetImageLoader
 # import excel2img
 import os
 import tkinter
-
+from tkinter import messagebox
 
 file2=""
 file1=""
@@ -40,7 +40,10 @@ def boq12():
     ##Getting BoQ formatted version to write directly
     xfile = openpyxl.load_workbook(file2)
     #sheet = xfile['GP-Wise BOQ']
-    sheet1=xfile['GP-Wise BOQ']
+    try:
+        sheet1=xfile['GP-Wise BOQ']
+    except:
+        messagebox.showerror("Extract Error", "BoQ file should have Sheet name 'GP-Wise BOQ'")
     #print(len(Sheet1['H']))
     #print(Sheet1['F3'].value)
 

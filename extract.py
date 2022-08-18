@@ -1,5 +1,5 @@
 import pandas as pd
-
+from tkinter import messagebox
 class Extract:
     
     def extract_ot(path):
@@ -25,6 +25,7 @@ class Extract:
             try:
                 ot=pd.read_excel(path,sheet_name='R04_T&D')
             except:
+                messagebox.showerror("Extract Error", "Sheet name should be 'OT' "+path)
                 print('No file R4_OT4')
         return ot
 
@@ -45,6 +46,7 @@ class Extract:
             try:
                 hdd=pd.read_excel(path,sheet_name='R08_HDD')
             except:
+                messagebox.showerror("Extract Error", "Sheet name should be 'HDD' "+path)
                 print('No file R4_OT3')
         
         
@@ -73,6 +75,7 @@ class Extract:
             try:
                 drt=pd.read_excel(path,sheet_name='R09-DRT ')
             except:
+                messagebox.showerror("Extract Error", "Sheet name should be 'DRT' "+path)
                 print('No file R9_DRT4')
         
         
@@ -100,6 +103,7 @@ class Extract:
             try:
                 blo=pd.read_excel(path,sheet_name='R10_BLOWING')
             except:
+                messagebox.showerror("Extract Error", "Sheet name should be 'BLOWING' "+path)
                 print('No file Blowing4')
         
         
