@@ -12,6 +12,7 @@ from openpyxl_image_loader import SheetImageLoader
 # import excel2img
 import os
 import tkinter
+import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 #Parth Pandey12:12 PM
 pd.options.mode.chained_assignment = None
@@ -126,10 +127,15 @@ def boq12():
                         s=0
                     elif s<50:
                         s=0
-                #print(temp," ",s," ",fin," ",ch1," ",ch2," ",ch3)          
+                #print(temp," ",s," ",fin," ",ch1," ",ch2," ",ch3)   
+
+            if np.isnan(sum):
+                sum=0       
         except:
             print("Something Wrong in missing calculation")
         print("Sum after missing")
+        if np.isnan(fin):
+            fin=0       
         sum+=fin
         print(fin)                
 
@@ -143,9 +149,9 @@ def boq12():
             print("Doing this calc.")
             print(last_blow)
             att=pd.isnull(last_blow)
-            print(att)
+            #print(att)
             atp=not(isinstance(last_blow, int))
-            print(atp)
+            #print(atp)
             atc=att+atp
             print(atc)
             #np.isnan(last_blow) or

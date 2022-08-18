@@ -291,6 +291,7 @@ class Create_table:
                 if type(drt.loc[i,'S_no'])!=int:
                     index.append(i)
                 elif (type(drt.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_ch_from'])!=int and type(drt.loc[i,'Duct_dam_ch_from'])!=int) and (type(drt.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_len'])!=int and type(drt.loc[i,'Remark'])!=int):
+                    print("That f drt condition success")
                     index.append(i)
                 
             return drt.drop(index,axis=0)
