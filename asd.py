@@ -12,15 +12,10 @@ from openpyxl_image_loader import SheetImageLoader
 # import excel2img
 import os
 import tkinter
-<<<<<<< Updated upstream
-from tkinter import messagebox
-=======
-import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 #Parth Pandey12:12 PM
 pd.options.mode.chained_assignment = None
 
->>>>>>> Stashed changes
 
 file2=""
 file1=""
@@ -48,10 +43,7 @@ def boq12():
     ##Getting BoQ formatted version to write directly
     xfile = openpyxl.load_workbook(file2)
     #sheet = xfile['GP-Wise BOQ']
-    try:
-        sheet1=xfile['GP-Wise BOQ']
-    except:
-        messagebox.showerror("Extract Error", "BoQ file should have Sheet name 'GP-Wise BOQ'")
+    sheet1=xfile['GP-Wise BOQ']
     #print(len(Sheet1['H']))
     #print(Sheet1['F3'].value)
 
@@ -68,10 +60,7 @@ def boq12():
         blo=Extract.extract_blo(j)
         if len(blo)!=0:
             (blo,joint_closer)=Create_table.create_blo(blo)
-<<<<<<< Updated upstream
-=======
             #joint_closer.to_csv('Joint_closure.csv')
->>>>>>> Stashed changes
 
         #blo.to_csv('blwoing.csv')
         #print("pas printing")
@@ -100,7 +89,7 @@ def boq12():
             #print(range(len(drt)))
             #print(drt.iloc[0])
             sum=0
-            drt.to_csv('drt133.csv')
+            #drt.to_csv('drt133.csv')
             drt=drt.reset_index(drop=True)
             for i in range(len(drt)):
                 ch1=drt.loc[i,'ch_from']
@@ -185,30 +174,25 @@ def boq12():
             sheet1[var+'3']=info[:-5]
             #sheet1[var1+'4']='STATE'
             #sheet1[var+'4']='BBNL'
-            sheet1[var+'11']=(blo.loc[blo['size_of_ofc']=='288F','Total_cable_length'].sum())/1000
-            sheet1[var+'14']=(blo.loc[blo['size_of_ofc']=='144F','Total_cable_length'].sum())/1000
-            sheet1[var+'17']=(blo.loc[blo['size_of_ofc']=='96F','Total_cable_length'].sum())/1000
-            sheet1[var+'18']=(blo.loc[blo['size_of_ofc']=='48F','Total_cable_length'].sum())/1000
-<<<<<<< Updated upstream
-        except:
-            print("No such Blowing files..")  
-=======
+            sheet1[var+'11']=(blo.loc['288' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
+            sheet1[var+'14']=(blo.loc['144' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
+            sheet1[var+'17']=(blo.loc['96' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
+            sheet1[var+'18']=(blo.loc['48' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
    
 
         except:
             print("No such Blowing files..")
 
         try:                
-            sheet1[var+'29']=(joint_closer.loc[joint_closer['cha_loop']=='288F','chb_end'].sum())
-            sheet1[var+'32']=(joint_closer.loc[joint_closer['cha_loop']=='144F','chb_end'].sum())
-            sheet1[var+'35']=(joint_closer.loc[joint_closer['cha_loop']=='96F','chb_end'].sum())
-            sheet1[var+'36']=(joint_closer.loc[joint_closer['cha_loop']=='48F','chb_end'].sum())
+            sheet1[var+'29']=(joint_closer.loc['288' in joint_closer['cha_loop'],'chb_end'].sum())
+            sheet1[var+'32']=(joint_closer.loc['144' in joint_closer['cha_loop'],'chb_end'].sum())
+            sheet1[var+'35']=(joint_closer.loc['96' in joint_closer['cha_loop'],'chb_end'].sum())
+            sheet1[var+'36']=(joint_closer.loc['48' in joint_closer['cha_loop'],'chb_end'].sum())
 
             
         except:
             print("No such Joint Closure files..")  
 
->>>>>>> Stashed changes
         try:
             if len(drt)==0 or sum==0:
                 sum=(blo['Length'].sum())
@@ -220,30 +204,19 @@ def boq12():
                 a=(drt['Duct_miss_ch_Length']==0)
                 b=~(drt['Duct_miss_ch_Length'].astype(str).str.isdigit())
                 y=a+b
-                #print("Printing a+b",a+b)
-                #print("Dit length only miss",drt.loc[y,'Length'].sum()/1000)
+                #print(a+b)
+                print("Dit length only miss",drt.loc[y,'Length'].sum()/1000)
                 c=(drt['Duct_dam_punct_loc_Length']==0)
                 d=~(drt['Duct_dam_punct_loc_Length'].astype(str).str.isdigit())
-                print("Printing c+d",c+d)
+                #print(c+d)
                 z=c+d
                 #tim=(drt.loc[z,'Length'])
                 #print(tim.loc['Length'].sum())
                 #print(drt.loc[z,'Length'].sum())
-                #print("Dit length only dam",drt.loc[z,'Length'].sum()/1000)
+                print("Dit length only dam",drt.loc[z,'Length'].sum()/1000)
 
                 e=y*z
-                #tim=(drt['Duct_miss_ch_Length'],y,drt['Duct_dam_punct_loc_Length'],z,e,drt['Length'],type(drt['Length']))
-                #tim=drt.loc[e,'Length']
-                #print("tim dataframe is getting printed")
-                #tim.to_csv(tim.csv)
-                #print(tim)
-                #print("Printing tim",tim)
-                #mum=0
-                
-                print("Printing dit sum",drt.loc[e,'Length'].sum())
-                
-
-                #print(drt.loc[e,'Length'].sum())
+                print("Dit length",drt.loc[e,'Length'].sum()/1000)
                 sheet1[var+'99']=drt.loc[e,'Length'].sum()/1000
                 sheet1[var+'22']=sum/1000
                 print("Duct laid",sum)
