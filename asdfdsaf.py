@@ -9,7 +9,6 @@ from create_table1 import Create_table
 import openpyxl
 import matplotlib.pyplot as plt
 from openpyxl_image_loader import SheetImageLoader
-# import excel2img
 import os
 import tkinter
 import warnings
@@ -17,46 +16,52 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 #Parth Pandey12:12 PM
 pd.options.mode.chained_assignment = None
 
-j=r'C:\Users\Aditya.gupta\Desktop\Mandal\WRG-ZAF-5706-M-01-GR01-13.xlsx'
+def append_new_line(file_name, text_to_append):
+    """Append given text as a new line at the end of file"""
+    # Open the file in append & read mode ('a+')
+    with open(file_name, "a+") as file_object:
+        # Move read cursor to the start of file.
+        file_object.seek(0)
+        # If file is not empty then append '\n'
+        data = file_object.read(100)
+        if len(data) > 0:
+            file_object.write("\n")
+        # Append text at the end of file
+        file_object.write(text_to_append)
 
-drt=Extract.extract_drt(j)
-if len(drt)!=0:
-    drt=Create_table.create_drt(drt)
-    drt.reset_index(drop=True,inplace=True)
+#file2=r'C:\Users\Aditya.gupta\Downloads\BoQ_Format.xlsx'
+file1=r'C:\Users\Aditya.gupta\Desktop\Mandal'
+
+mandal_file=file1+'/'
+print("Grabbed mandal location")
+no=0
+os.chdir(mandal_file)
+for info in os.listdir():
+    j=mandal_file+info
+    print(j)
+    blo=Extract.extract_blo(j)
+    if len(blo)==0:
+        e1=info
+        append_new_line('sample3.txt', e1)
+        #(blo,joint_closer)=Create_table.create_blo(blo)
+        #joint_closer.to_csv('Joint_closure.csv')
+    #blo.to_csv('blwoing.csv')
+    #print("pas printing")
+    drt=Extract.extract_drt(j)
+    if len(drt)!=0:
+        drt=Create_table.create_drt(drt)
+        drt.reset_index(drop=True,inplace=True)
     #print("empty")
-
-
-a=(drt['Duct_miss_ch_Length']==0)
-b=~(drt['Duct_miss_ch_Length'].astype(str).str.isdigit())
-y=a+b
-#print("Printing a+b",a+b)
-#print("Dit length only miss",drt.loc[y,'Length'].sum()/1000)
-c=(drt['Duct_dam_punct_loc_Length']==0)
-d=~(drt['Duct_dam_punct_loc_Length'].astype(str).str.isdigit())
-#print("Printing c+d",c+d)
-z=c+d
-#tim=(drt.loc[z,'Length'])
-#print(tim.loc['Length'].sum())
-#print(drt.loc[z,'Length'].sum())
-#print("Dit length only dam",drt.loc[z,'Length'].sum()/10
-e=y*z
-drtmissseries=pd.Series(drt['Duct_miss_ch_Length'])
-drtmissseriesbool=pd.Series(y)
-drtdamseries=pd.Series(drt['Duct_dam_punct_loc_Length'])
-drtdamseriesbool=pd.Series(z)
-drtdammissseries=pd.Series(e)
-drtrequirelen=pd.Series(drt['Length'])
-drttype=pd.Series(type(drt['Length']))
-tim={'DRT mis length':drtdammissseries,'Miss bool value':drtmissseriesbool,'DRT dam length':drtdamseries,'Dam bool value':drtdamseriesbool,'Dam+dis bool':drtdammissseries,'Required Length':drtrequirelen,'Req length type':drttype}
-print(tim)
-tim_df=pd.DataFrame(tim)
-#tim=drt.loc[e,'Length']
-print("tim dataframe is getting printed")
-tim_df.to_csv('tim.csv')
-#print(tim)
-#print("Printing tim",tim)
-#mum=0
-
-print("Printing dit sum",drt.loc[e,'Length'].sum())
-
-#print(drt.loc[e,'Length'].sum())
+    #print(drt)
+    #drt.to_csv('drt12.csv')
+    ot=Extract.extract_ot(j)
+    if len(ot)!=0:
+        ot=Create_table.create_ot(ot)   
+    hdd=Extract.extract_hdd(j)
+    if len(hdd)!=0:
+        hdd=Create_table.create_hdd(hdd)      
+    #print(joint_closer)
+    s=0
+    fin=0
+    temp=0
+    no+=1

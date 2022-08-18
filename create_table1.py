@@ -457,7 +457,7 @@ class Create_table:
         df1['Mandal_Name']=mandal
         df1['To_GP']=to_gp
         df1['Span_ID']=span_id
-        df1['size_of_ofc']=df1['size_of_ofc'].str.replace(' ','')
+        #df1['size_of_ofc']=df1['size_of_ofc'].str.replace(' ','')
 
         def generate_joint_closer(blow):
             joint_closer=[]
