@@ -77,7 +77,7 @@ def boq12():
         ot=Extract.extract_ot(j)
         if len(ot)!=0:
             ot=Create_table.create_ot(ot)   
-
+        #ot.to_csv('ot12.csv')
         hdd=Extract.extract_hdd(j)
         if len(hdd)!=0:
             hdd=Create_table.create_hdd(hdd)      
@@ -180,20 +180,20 @@ def boq12():
             sheet1[var+'3']=info[:-5]
             #sheet1[var1+'4']='STATE'
             #sheet1[var+'4']='BBNL'
-            sheet1[var+'11']=(blo.loc['288' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
-            sheet1[var+'14']=(blo.loc['144' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
-            sheet1[var+'17']=(blo.loc['96' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
-            sheet1[var+'18']=(blo.loc['48' in blo['size_of_ofc'],'Total_cable_length'].sum())/1000
+            sheet1[var+'11']=(blo.loc[blo['size_of_ofc'].isin(['288F','288 F','288']),'Total_cable_length'].sum())/1000
+            sheet1[var+'14']=(blo.loc[blo['size_of_ofc'].isin(['144F','144 F','144']),'Total_cable_length'].sum())/1000
+            sheet1[var+'17']=(blo.loc[blo['size_of_ofc'].isin(['96F','96 F','96']),'Total_cable_length'].sum())/1000
+            sheet1[var+'18']=(blo.loc[blo['size_of_ofc'].isin(['48F','48 F','48']),'Total_cable_length'].sum())/1000
    
 
         except:
             print("No such Blowing files..")
 
         try:                
-            sheet1[var+'29']=(joint_closer.loc['288' in joint_closer['cha_loop'],'chb_end'].sum())
-            sheet1[var+'32']=(joint_closer.loc['144' in joint_closer['cha_loop'],'chb_end'].sum())
-            sheet1[var+'35']=(joint_closer.loc['96' in joint_closer['cha_loop'],'chb_end'].sum())
-            sheet1[var+'36']=(joint_closer.loc['48' in joint_closer['cha_loop'],'chb_end'].sum())
+            sheet1[var+'29']=(joint_closer.loc[joint_closer['cha_loop'].isin(['288F','288 F','288']),'chb_end'].sum())
+            sheet1[var+'32']=(joint_closer.loc[joint_closer['cha_loop'].isin(['144F','144 F','144']),'chb_end'].sum())
+            sheet1[var+'35']=(joint_closer.loc[joint_closer['cha_loop'].isin(['96F','96 F','96']),'chb_end'].sum())
+            sheet1[var+'36']=(joint_closer.loc[joint_closer['cha_loop'].isin(['48F','48 F','48']),'chb_end'].sum())
 
             
         except:
@@ -201,6 +201,7 @@ def boq12():
 
         try:
             if len(drt)==0 or sum==0:
+                print("No DRT File case triggered,dit=0, duct laid=sum(blowing)")
                 sum=(blo['Length'].sum())
                 print("No drt case+no sum case",sum)
                 sheet1[var+'99']=0
