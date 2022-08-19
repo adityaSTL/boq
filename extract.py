@@ -158,8 +158,8 @@ class Extract:
                 print('No file Blowing4')
         #blo.to_csv("blow_init.csv")
         try:
-            if (len(blo.columns)!=17):        
-                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in Blowing MB of "+path[:-5])
+            if (len(blo.columns)!=17 or len(blo.columns)!=18):        
+                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in Blowing MB of "+path[:-5]+"/n"+"Count of columns is "+len(blo.column))
                 exit()
         except:
             print("NO Blowing Files")
