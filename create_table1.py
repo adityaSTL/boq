@@ -7,6 +7,7 @@ class Create_table:
         to_gp=''
         span_id=''
 
+        """
         for i in range(4,12):
             if len(ot.columns)<i:
                 break
@@ -29,6 +30,8 @@ class Create_table:
                 break
         print(f'spanid is {span_id}')
         ot=ot[10:]
+        """
+        ot.reset_index(drop=True,inplace=True)
         j=0
         columns_={}
         for i in ot.columns:
@@ -70,17 +73,30 @@ class Create_table:
                     columns_[i]='remark'
                 j+=1
         ot.rename(columns=columns_,inplace=True)
+        #ot.to_csv('otinintal.csv')
         def remove_noise(ot):
             ot.reset_index(drop=True,inplace=True)
+            
             index=[]
             for i in range(len(ot)):
+                if (type(ot.loc[i,'S_no'])==int or type(ot.loc[i,'dwc'])==int or type(ot.loc[i,'gi'])==int or type(ot.loc[i,'rcc_ch'])==int or type(ot.loc[i,'rcc_route'])==int):
+                    #print(ot.loc[ot[i,]])
+                    ot.at[i,'S_no']=80
+            #ot.to_csv('otafterputting80.csv')
+            for i in range(len(ot)):
+                
+
                 if type(ot.loc[i,'S_no'])!=int:
                     index.append(i)
+                    """
                 elif ot.loc[i,'Ch_from'] is np.nan:
                     index.append(i)
+                    """
             return ot.drop(index,axis=0)
         # 
+        
         ot=remove_noise(ot)    
+        #ot.to_csv('otafternoise.csv')
         df1=pd.DataFrame(columns=columns_)
         # 
         df1['Chainage_From']=ot['Ch_from']
@@ -105,12 +121,16 @@ class Create_table:
         df1['Mandal_Name']=mandal
         df1['To_GP']=to_gp
         df1['Span_ID']=span_id  
+        #print(df1)
         return df1
+
+
     def create_hdd(hdd):
         zone=''
         mandal=''
         to_gp=''
         span_id=''
+        """
         for i in range(4,12):
             if len(hdd.columns)<i:
                 break
@@ -134,6 +154,7 @@ class Create_table:
         
         
         hdd=hdd[10:]
+        """
         j=0
         columns_={}
         for i in hdd.columns:
@@ -160,15 +181,15 @@ class Create_table:
             
             j+=1
         hdd.rename(columns=columns_,inplace=True)
-        def remove_noise(ot):
-            ot.reset_index(drop=True,inplace=True)
+        def remove_noise(hdd):
+            hdd.reset_index(drop=True,inplace=True)
             index=[]
-            for i in range(len(ot)):
-                if type(ot.loc[i,'S_no'])!=int:
+            for i in range(len(hdd)):
+                if type(hdd.loc[i,'S_no'])!=int:
                     index.append(i)
-                elif type(ot.loc[i,'Ch_from']) is not int:
+                elif type(hdd.loc[i,'Ch_from']) is not int:
                     index.append(i)
-            return ot.drop(index,axis=0)
+            return hdd.drop(index,axis=0)
         
         hdd=remove_noise(hdd)    
         
@@ -193,7 +214,7 @@ class Create_table:
         df1['Graph_as_built_made']=hdd['Graph']
         
         df1['Remark']=hdd['Remark']
-        # df1['Zone_Name']
+        #df1['Zone_Name']
         df1['Zone_Name']=zone
         df1['Mandal_Name']=mandal
         df1['To_GP']=to_gp
@@ -205,6 +226,7 @@ class Create_table:
         mandal=''
         to_gp=''
         span_id=''
+        """
         for i in range(4,12):
             if len(drt.columns)<i:
                 break
@@ -227,6 +249,7 @@ class Create_table:
                 break
         
         drt=drt[9:]
+        """
         j=0
         columns_={}
         for i in drt.columns:
@@ -282,16 +305,21 @@ class Create_table:
             drt.reset_index(drop=True,inplace=True)
             index=[]
             for i in range(len(drt)):
-                if type(drt.loc[i,'Remark'])==int and type(drt.loc[i,'Duct_miss_len'])==int:
-                    drt.loc[i,'Duct_miss_ch_from']=drt.loc[i,'Duct_miss_len']
+                if type(drt.loc[i,'Ch_from'])==int or type(drt.loc[i,'Ch_to'])==int or type(drt.loc[i,'Len'])==int or type(drt.loc[i,'Duct_dam_len'])==int or type(drt.loc[i,'Duct_miss_len'])==int:
+                    drt.at[i,'S_no']=81
+                    #drt.loc[i,'Duct_miss_ch_from']=drt.loc[i,'Duct_miss_len']
 
+                    """
                     drt.loc[i,'Duct_miss_ch_to']=drt.loc[i,'Remark']
                     drt.loc[i,'Duct_miss_len']=drt.loc[i,'Duct_miss_ch_to']-drt.loc[i,'Duct_miss_ch_from']
-
+                    """
                 if type(drt.loc[i,'S_no'])!=int:
                     index.append(i)
+                    """
                 elif (type(drt.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_ch_from'])!=int and type(drt.loc[i,'Duct_dam_ch_from'])!=int) and (type(drt.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_len'])!=int and type(drt.loc[i,'Remark'])!=int):
+                    print("That f drt condition success")
                     index.append(i)
+                    """
                 
             return drt.drop(index,axis=0)
         
@@ -347,6 +375,7 @@ class Create_table:
         mandal=''
         to_gp=''
         span_id=''
+        """
         for i in range(4,12):
             if len(blo.columns)<i:
                 break
@@ -369,6 +398,7 @@ class Create_table:
                 break
         
         blo=blo[12:]
+        """
         j=0
         columns_={}
         for i in blo.columns:
@@ -410,14 +440,20 @@ class Create_table:
             #     columns_[i]='Remark'
             
             j+=1
+           
         # print(blo.columns[17])
         blo.rename(columns=columns_,inplace=True)
+        #blo.to_csv("Blow after col naming.csv")
         blow=blo[:]
         def remove_noise(blo):
             blo.reset_index(drop=True,inplace=True)
             index=[]
             for i in range(len(blo)):
-                if type(blo.loc[i,'S_no'])!=int or type(blo.loc[i,'cab_len'])!=int:
+                if type(blo.loc[i,'Ch_from'])==int or type(blo.loc[i,'Ch_to'])==int or type(blo.loc[i,'len'])==int or type(blo.loc[i,'cab_len'])==int:
+                    blo.at[i,'S_no']=88 
+
+
+                if type(blo.loc[i,'S_no'])!=int or (pd.isna(blo.loc[i,'size'])) or type(blo.loc[i,'cab_len'])!=int:
                     index.append(i)
                 # elif type(blo.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_ch_from'])!=int and type(drt.loc[i,'Duct_dam_ch_from'])!=int:
                 #     index.append(i)
@@ -457,8 +493,9 @@ class Create_table:
         df1['Mandal_Name']=mandal
         df1['To_GP']=to_gp
         df1['Span_ID']=span_id
-        df1['size_of_ofc']=df1['size_of_ofc'].str.replace(' ','')
-
+        #df1['size_of_ofc']=df1['size_of_ofc'].str.replace(' ','')
+        #blo.to_csv('blo123.csv')
+        
         def generate_joint_closer(blow):
             joint_closer=[]
             blow=blow.reset_index(drop=True)
