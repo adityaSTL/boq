@@ -84,6 +84,7 @@ def boq12():
         #print(joint_closer)
         s=0
         fin=0
+        fin1=0
         temp=0
 
         try:
@@ -99,12 +100,16 @@ def boq12():
                     ch3=drt.loc[i+1,'ch_from']
                     if(ch3!=ch2):
                         sum+=ch3-ch2
-            print("sum after chaining",sum)
-            #print(sum)
-
+            
             if np.isnan(sum):
                 sum=0
 
+            print("sum after chaining",sum)
+            #print(sum)
+
+            
+
+            ##For missing case -50 agreement    
             for i in range(len(drt)):
                 ch1=drt.loc[i,'Duct_miss_ch_from']
                 ch2=drt.loc[i,'Duct_miss_ch_to']
@@ -129,22 +134,57 @@ def boq12():
                         s=0
                 #print(temp," ",s," ",fin," ",ch1," ",ch2," ",ch3)   
 
+            ##For damaged case -50 Agreement
+            temp=0
+            s=0
+            for i in range(len(drt)):
+                ch1=drt.loc[i,'Duct_dam_ch_from']
+                ch2=drt.loc[i,'Duct_dam_ch_to']
+                if i!=(len(drt)-1):
+                    ch3=drt.loc[i+1,'Duct_dam_ch_from']
+
+                temp=(drt.loc[i,'Duct_dam_ch_Length'])
+
+                if ch3==ch2:
+                    s+=temp  
+
+                elif ch3!=ch2:
+                    #print("got it")
+                    s=np.nansum([s+temp])
+                    #print(temp,"s is",s,"done")
+                    #print(s)
+                    if(s>=50):
+                        s-=50
+                        fin1+=s
+                        s=0
+                    elif s<50:
+                        s=0
+                #print(temp," ",s," ",fin," ",ch1," ",ch2," ",ch3)       
+
             if np.isnan(sum):
-                sum=0       
+                sum=0  
+
+
         except:
             print("Something Wrong in missing calculation")
         print("Sum after missing")
         if np.isnan(fin):
-            fin=0       
-        sum+=fin
-        print(fin)                
+            fin=0   
+
+        if np.isnan(fin1):
+           fin1=0           
+        
+        sum+=fin+fin1
+        print("Present value of sum after Chainaing && (mis+dam) case",sum)
+
+        print("Missing case",fin,"Dam case",fin1)                
 
         try:
             blo=blo.reset_index(drop=True)
             start_drt=drt['ch_from'].iloc[0]
             sum+=(start_drt-0)
-            print("Sum before starting 0")
-            print(sum)
+            print("Sum before starting 0 is ",start_drt-0)
+            print("Present value of sum after Chaining && starting case and after (mis+dam) case",sum)
             last_blow=blo['Chainage_To'].iloc[-1]
             print("Doing this calc.")
             print(last_blow)
@@ -200,7 +240,29 @@ def boq12():
             print("No such Joint Closure files..")  
 
         try:
-            if len(drt)==0 or sum==0:
+            if len(drt)!=0 and sum==0:
+                sheet1[var+'22']=sum/1000
+                a=(drt['Duct_miss_ch_Length']==0)
+                b=~(drt['Duct_miss_ch_Length'].astype(str).str.isdigit())
+                y=a+b
+                #print(a+b)
+                print("Dit length only miss",drt.loc[y,'Length'].sum()/1000)
+                c=(drt['Duct_dam_punct_loc_Length']==0)
+                d=~(drt['Duct_dam_punct_loc_Length'].astype(str).str.isdigit())
+                #print(c+d)
+                z=c+d
+                #tim=(drt.loc[z,'Length'])
+                #print(tim.loc['Length'].sum())
+                #print(drt.loc[z,'Length'].sum())
+                print("Dit length only dam",drt.loc[z,'Length'].sum()/1000)
+
+                e=y*z
+                print("Dit length",drt.loc[e,'Length'].sum()/1000)
+                sheet1[var+'99']=drt.loc[e,'Length'].sum()/1000
+                #sheet1[var+'22']=sum/1000
+                print("Duct laid",sum)
+
+            elif len(drt)==0 and sum==0:
                 print("No DRT File case triggered,dit=0, duct laid=sum(blowing)")
                 sum=(blo['Length'].sum())
                 print("No drt case+no sum case",sum)
