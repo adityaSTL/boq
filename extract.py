@@ -41,7 +41,8 @@ class Extract:
 
         try:
             if (len(ot.columns)!=18):        
-                messagebox.showerror("Format Error", "!ERROR! Number of columns is different (Duplicate/Extra Columns found) in OT MB of "+path[:-5])
+                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in OT MB of "+path[:-5])
+                exit()
         except:
             print("No OT File")
         return ot
@@ -111,7 +112,8 @@ class Extract:
         
         try:
             if (len(drt.columns)!=23):        
-                messagebox.showerror("Format Error", "!ERROR! Number of columns is different (Duplicate/Extra Columns found) in DRT MB of "+path[:-5])
+                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in DRT MB of "+path[:-5])
+                exit()
         except:
             print("No DRT Files")
         return drt    
@@ -157,7 +159,8 @@ class Extract:
         #blo.to_csv("blow_init.csv")
         try:
             if (len(blo.columns)!=17):        
-                messagebox.showerror("Format Error", "!ERROR! Number of columns is different (Duplicate/Extra Columns found) in Blowing MB of "+path[:-5])
+                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in Blowing MB of "+path[:-5])
+                exit()
         except:
             print("NO Blowing Files")
         return blo        
