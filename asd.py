@@ -185,6 +185,8 @@ def boq12():
             sum+=(start_drt-0)
             print("Sum before starting 0 is ",start_drt-0)
             print("Present value of sum after Chaining && starting case and after (mis+dam) case",sum)
+
+            ##############Calculation Last Blow#########################
             last_blow=blo['Chainage_To'].iloc[-1]
             print("Doing this calc.")
             print(last_blow)
@@ -199,11 +201,30 @@ def boq12():
                 last_blow=blo['Chainage_To'].iloc[-2]
                 print("Last blow for -2 case",last_blow)
             print("Final case",last_blow)
+            if np.isnan(last_blow):
+                last_blow=0    
+##############################Last BLow Calculation################################
+
+            ###################Last DRT Calculation#####################           
             last_drt=drt['ch_to'].iloc[-1]
+            att1=pd.isnull(last_drt)
+            #print(att)
+            atp1=not(isinstance(last_drt, int))
+            #print(atp)
+            atc1=att1+atp1
+            print(atc1)
+            #np.isnan(last_blow) or
+            if (atc1):
+                last_drt=drt['Ch_to'].iloc[-2]
+                print("Last drt for -2 case",last_drt)
+            
+            ##########Last DRT CAlculation########################
+
+            if np.isnan(last_drt):
+                last_drt=0           
             print(last_drt)
-            print("Final sum")
             sum+=last_blow-last_drt
-            print(sum)    
+            print("Final Sum is ",sum)    
             #ot.to_csv('ot12.csv')    
             #print(sheet[chr(ord('F')+no)+'9'])
         
