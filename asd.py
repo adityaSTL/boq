@@ -167,7 +167,7 @@ def boq12():
 
         except:
             print("Something Wrong in missing calculation")
-        print("Sum after missing")
+        #print("Sum after missing")
         if np.isnan(fin):
             fin=0   
 
@@ -188,14 +188,13 @@ def boq12():
 
             ##############Calculation Last Blow#########################
             last_blow=blo['Chainage_To'].iloc[-1]
-            print("Doing this calc.")
-            print(last_blow)
+            print("Doing this calc. of last_blowing",last_blow)
             att=pd.isnull(last_blow)
             #print(att)
             atp=not(isinstance(last_blow, int))
             #print(atp)
             atc=att+atp
-            print(atc)
+            #print(atc)
             #np.isnan(last_blow) or
             if (atc):
                 last_blow=blo['Chainage_To'].iloc[-2]
@@ -212,7 +211,7 @@ def boq12():
             atp1=not(isinstance(last_drt, int))
             #print(atp)
             atc1=att1+atp1
-            print(atc1)
+            #print(atc1)
             #np.isnan(last_blow) or
             if (atc1):
                 last_drt=drt['Ch_to'].iloc[-2]
@@ -222,7 +221,7 @@ def boq12():
 
             if np.isnan(last_drt):
                 last_drt=0           
-            print(last_drt)
+            print("Doing last cal of last drt",last_drt)
             sum+=last_blow-last_drt
             print("Final Sum is ",sum)    
             #ot.to_csv('ot12.csv')    
