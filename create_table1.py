@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from tkinter import messagebox
+
 class Create_table:
     def create_ot(ot):
         zone=''
@@ -301,9 +303,25 @@ class Create_table:
                 columns_[i]='Remark'
             j+=1
         drt.rename(columns=columns_,inplace=True)
+
+        for i in range(len(drt)):
+            if type(drt.loc[i,'Duct_dam_ch_from'])==int and type(drt.loc[i,'Duct_dam_ch_to'])==int:
+                drt.loc[i,'Ch_from']=drt.loc[i,'Duct_dam_ch_from']
+                drt.loc[i,'Ch_to']=drt.loc[i,'Duct_dam_ch_to']
+
+        for i in range(len(drt)):
+            if type(drt.loc[i,'Duct_miss_ch_from'])==int and type(drt.loc[i,'Duct_miss_ch_to'])==int:
+                drt.loc[i,'Ch_from']=drt.loc[i,'Duct_miss_ch_from']
+                drt.loc[i,'Ch_to']=drt.loc[i,'Duct_miss_ch_to']
+
+
         def remove_noise(drt):
             drt.reset_index(drop=True,inplace=True)
             index=[]
+            
+            
+
+
             for i in range(len(drt)):
                 if type(drt.loc[i,'Ch_from'])==int or type(drt.loc[i,'Ch_to'])==int or type(drt.loc[i,'Len'])==int or type(drt.loc[i,'Duct_dam_len'])==int or type(drt.loc[i,'Duct_miss_len'])==int:
                     drt.at[i,'S_no']=81

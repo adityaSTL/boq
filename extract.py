@@ -39,12 +39,7 @@ class Extract:
                 #messagebox.showerror("Extract Error", "Sheet name should be 'OT' "+path)
                 print('No file R4_OT4')
 
-        try:
-            if (len(ot.columns)!=18):        
-                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in OT MB of "+path[:-5])
-                exit()
-        except:
-            print("No OT File")
+        
         return ot
 
     def extract_hdd(path):
@@ -110,12 +105,7 @@ class Extract:
                 #messagebox.showerror("Extract Error", "Sheet name should be 'DRT' "+path)
                 print('No file R9_DRT4')
         
-        try:
-            if (len(drt.columns)!=23):        
-                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in DRT MB of "+path[:-5])
-                exit()
-        except:
-            print("No DRT Files")
+        
         return drt    
 
     def extract_blo(path):
@@ -157,10 +147,5 @@ class Extract:
                 #messagebox.showerror("Extract Error", "Sheet name should be 'BLOWING' "+path)
                 print('No file Blowing4')
         #blo.to_csv("blow_init.csv")
-        try:
-            if (len(blo.columns)!=17 or len(blo.columns)!=18):        
-                messagebox.showerror("Format ERROR!!", "Number of columns is different (Duplicate/Extra Columns found) in Blowing MB of "+path[:-5]+"/n"+"Count of columns is "+len(blo.column))
-                exit()
-        except:
-            print("NO Blowing Files")
+        
         return blo        

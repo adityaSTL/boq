@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from openpyxl_image_loader import SheetImageLoader
 # import excel2img
 import os
+import os.path
 import tkinter
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -39,6 +40,146 @@ def mandal_folder():
     t=filedialog.askdirectory()
     file1=file1+t
     print(t,file1)
+
+def boq_checkup():
+
+
+    counter=0
+    top= Toplevel(popupRoot)
+    top.geometry("980x550")
+    l = Label(top, text = "Here is a list of Errors!!")
+    l.config(font =("Courier", 14))
+    b2 = Button(top, text = "Exit",command = top.destroy)
+    top.title("Error Check-up Window")
+    superstring=""
+
+    mandal_file=file1+'/'
+    if os.path.exists(mandal_file+"BOQ122.xlsx"):
+        #print("123")
+        counter+=1
+        superstring=superstring+str(counter)+". Removed the already present BoQ122.xlsx file in Mandal Folder"+"\n"
+        os.remove(mandal_file+"BOQ122.xlsx")
+
+    os.chdir(mandal_file)
+    
+    for info in os.listdir():
+
+        j=mandal_file+info
+        
+
+        try:
+            blo=Extract.extract_blo(j)
+            if len(blo.columns)!=18 and len(blo.columns)!=17:
+                #print("Working1")
+                counter+=1
+                superstring = superstring+str(counter)+""". Number of columns is different (Duplicate/Extra Columns found) in Blowing MB of """+info+""". Count of columns is """+str(len(blo.columns))+"\n"
+                #print(tem)
+        except:
+            counter+=1
+            superstring=superstring+str(counter)+". No Blowing MB captured in "+info+""". Standard names are "BLOWING","blowing","R10_BLOWING","R10_Blowing"."""+"\n"
+        
+        try:
+            drt=Extract.extract_drt(j)
+            j=0
+            columns_={}
+            for i in drt.columns:
+                if j==0:
+                    columns_[i]='S_no'
+                elif j==1:
+                    columns_[i]='Ch1_lat'
+                elif j==2:
+                    columns_[i]='Ch1_long'
+                elif j==3:
+                    columns_[i]='Ch1_cond'
+                elif j==4:
+                    columns_[i]='Ch1_route_marker'
+                elif j==5:
+                    columns_[i]='Ch2_lat'
+                elif j==6:
+                    columns_[i]='Ch2_long'
+                elif j==7:
+                    columns_[i]='Ch2_cond'
+                elif j==8:
+                    columns_[i]='Ch2_route_marker'
+                elif j==9:
+                    columns_[i]='Ch_from'
+                elif j==10:
+                    columns_[i]='Ch_to'
+                elif j==11:
+                    columns_[i]='Len'
+                elif j==12:
+                    columns_[i]='Duct_dam_lat'
+                elif j==13:
+                    columns_[i]='Duct_dam_long'
+                elif j==14:
+                    columns_[i]='Duct_dam_ch_from'
+                elif j==15:
+                    columns_[i]='Duct_dam_ch_to'
+                elif j==16:
+                    columns_[i]='Duct_dam_len'
+                elif j==17:
+                    columns_[i]='Duct_miss_lat'
+                elif j==18:
+                    columns_[i]='Duct_miss_long'
+                elif j==19:
+                    columns_[i]='Duct_miss_ch_from'
+                elif j==20:
+                    columns_[i]='Duct_miss_ch_to'
+                elif j==21:
+                    columns_[i]='Duct_miss_len'
+                elif j==22:
+                    columns_[i]='Remark'
+                j+=1
+            drt.rename(columns=columns_,inplace=True)
+            drt.reset_index(drop=True,inplace=True)
+            for i in range(len(drt)):
+                if type(drt.loc[i,'Duct_dam_ch_from'])==int and type(drt.loc[i,'Duct_dam_ch_to'])==int:
+                    if drt.loc[i,'Duct_dam_ch_from']!=drt.loc[i,'Ch_from'] and drt.loc[i,'Duct_dam_ch_to']!=drt.loc[i,'Ch_to']:
+                        counter+=1
+                        superstring=superstring+str(counter)+". Please correct chainage error in DRT MB of "+info+"\n"
+
+            for i in range(len(drt)):
+                if type(drt.loc[i,'Duct_miss_ch_from'])==int and type(drt.loc[i,'Duct_miss_ch_to'])==int:
+                    if drt.loc[i,'Duct_miss_ch_from']!=drt.loc[i,'Ch_from'] and drt.loc[i,'Duct_miss_ch_to']!=drt.loc[i,'Ch_to']:
+                        counter+=1
+                        superstring=superstring+str(counter)+". Please correct chainage error in DRT MB of "+info+"\n"
+
+
+            if len(drt.columns)!=23:
+                #print("Working2")
+                counter+=1
+                superstring = superstring+str(counter)+". Number of columns is different (Duplicate/Extra Columns found) in DRT MB of "+info+". Count of columns is "+str(len(drt.columns))+"\n"
+                
+        except:
+            counter+=1
+            superstring=superstring+str(counter)+". No DRT MB captured in "+info+""". Standard names are "DRT","R09_DRT","R09-DRT","R9_DRT"."""+"\n"
+        
+        try:
+            ot=Extract.extract_ot(j)
+            if len(ot.columns)!=18:
+                counter+=1
+                superstring = superstring+str(counter)+" .Number of columns is different (Duplicate/Extra Columns found) in OT MB of "+info+". Count of columns is "+str(len(ot.columns))+"\n"
+                
+        except:
+            counter+=1
+            superstring=superstring+str(counter)+". No OT MB captured in "+info+""". Standard names are "OT","R4_OT","OT MB","R04_T&D"."""+"\n"
+
+    text_box = Text(
+    top,
+    height=50,
+    width=200
+    )
+    text_box.pack(expand=True)
+    text_box.insert('end', superstring)
+    text_box.config(state='disabled')
+
+    #tata="Raadsf aesr faaser asd aw fesf aesf /n aser asef asef "
+    #l1 = Label(top, text = tata)
+    #print("superstring",type(superstring),len(superstring),superstring,"1")
+    #l1.config(font =("Courier", 7))
+    #l1.pack()
+    l.pack()
+    b2.pack()
 
 def boq12():
     ##Getting BoQ formatted version to write directly
@@ -328,13 +469,17 @@ def boq12():
         no+=1
     popupRoot.destroy()
 
-
-popuplabel = Label(popupRoot, text = 'Please select BoQ Format First',font = ("Times New Roman", 10)).grid(row=0,column=1)
-popupButton = Button(popupRoot, text = 'Upload BoQ Format', font = ("Times New Roman", 10), command = boq_format,width = 20).grid(row=0,column=2)
-popuplabel = Label(popupRoot, font = ("Times New Roman", 10),text = 'Upload Mandal Folder').grid(row=1,column=1)
-popupButton = Button(popupRoot, text = 'Upload Mandal Folder', font = ("Times New Roman", 10), command = mandal_folder,width = 20).grid(row=1,column=2)
-popupButton = Button(popupRoot, text = 'Run BoQ Script', font = ("Times New Roman", 11), command = boq12,width = 15).grid(row=3,column=1)
-popupRoot.geometry('350x100')
+popuplabel = Label(popupRoot, text = 'BoQer Code V2.1',font = ("Times New Roman", 11)).grid(row=0,column=1)
+popupButton = Label(popupRoot, text = 'STL',bg='white',fg='blue',font = ("Times New Roman", 13,'bold'), anchor="e",justify=RIGHT).grid(row=0,column=2)
+popuplabel = Label(popupRoot, text = ' ',font = ("Times New Roman", 12)).grid(row=1,column=1)
+popuplabel = Label(popupRoot, text = 'Select the BoQ Format',font = ("Times New Roman", 12)).grid(row=2,column=1)
+popupButton = Button(popupRoot, text = 'BoQ Format', font = ("Times New Roman", 12), command = boq_format,width = 20).grid(row=2,column=2)
+popuplabel = Label(popupRoot, font = ("Times New Roman", 12),text = 'Select Mandal Folder').grid(row=3,column=1)
+popupButton = Button(popupRoot, text = 'Mandal Folder', font = ("Times New Roman", 12), command = mandal_folder,width = 20).grid(row=3,column=2)
+popuplabel = Label(popupRoot, text = ' ',font = ("Times New Roman", 12)).grid(row=4,column=1)
+popupButton = Button(popupRoot, text = 'Run BoQ Script', bg='light green',font = ("Times New Roman", 15), command = boq12,width = 12).grid(row=5,column=2)
+popupButton = Button(popupRoot, text = 'Error Checkup', bg='orange',font = ("Times New Roman", 15), command = boq_checkup,width = 12).grid(row=5,column=1)
+popupRoot.geometry('350x200')
 #print("1")
 
 #print("printing")
