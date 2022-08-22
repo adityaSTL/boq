@@ -303,7 +303,24 @@ class Create_table:
                 columns_[i]='Remark'
             j+=1
         drt.rename(columns=columns_,inplace=True)
+        drt.reset_index(drop=True,inplace=True)
+        
 
+
+        def remove_noise(drt):
+            drt.reset_index(drop=True,inplace=True)
+            index=[]
+            for i in range(len(drt)):
+                if type(drt.loc[i,'Ch_from'])==int or type(drt.loc[i,'Ch_to'])==int or type(drt.loc[i,'Len'])==int or type(drt.loc[i,'Duct_dam_len'])==int or type(drt.loc[i,'Duct_miss_len'])==int:
+                    drt.at[i,'S_no']=81
+                    #drt.loc[i,'Duct_miss_ch_from']=drt.loc[i,'Duct_miss_len']
+
+                if type(drt.loc[i,'S_no'])!=int:
+                    index.append(i)
+
+                
+            return drt.drop(index,axis=0)
+        
         for i in range(len(drt)):
             if type(drt.loc[i,'Duct_dam_ch_from'])==int and type(drt.loc[i,'Duct_dam_ch_to'])==int:
                 drt.loc[i,'Ch_from']=drt.loc[i,'Duct_dam_ch_from']
@@ -313,34 +330,7 @@ class Create_table:
             if type(drt.loc[i,'Duct_miss_ch_from'])==int and type(drt.loc[i,'Duct_miss_ch_to'])==int:
                 drt.loc[i,'Ch_from']=drt.loc[i,'Duct_miss_ch_from']
                 drt.loc[i,'Ch_to']=drt.loc[i,'Duct_miss_ch_to']
-
-
-        def remove_noise(drt):
-            drt.reset_index(drop=True,inplace=True)
-            index=[]
-            
-            
-
-
-            for i in range(len(drt)):
-                if type(drt.loc[i,'Ch_from'])==int or type(drt.loc[i,'Ch_to'])==int or type(drt.loc[i,'Len'])==int or type(drt.loc[i,'Duct_dam_len'])==int or type(drt.loc[i,'Duct_miss_len'])==int:
-                    drt.at[i,'S_no']=81
-                    #drt.loc[i,'Duct_miss_ch_from']=drt.loc[i,'Duct_miss_len']
-
-                    """
-                    drt.loc[i,'Duct_miss_ch_to']=drt.loc[i,'Remark']
-                    drt.loc[i,'Duct_miss_len']=drt.loc[i,'Duct_miss_ch_to']-drt.loc[i,'Duct_miss_ch_from']
-                    """
-                if type(drt.loc[i,'S_no'])!=int:
-                    index.append(i)
-                    """
-                elif (type(drt.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_ch_from'])!=int and type(drt.loc[i,'Duct_dam_ch_from'])!=int) and (type(drt.loc[i,'Ch_from'])!=int and type(drt.loc[i,'Duct_miss_len'])!=int and type(drt.loc[i,'Remark'])!=int):
-                    print("That f drt condition success")
-                    index.append(i)
-                    """
                 
-            return drt.drop(index,axis=0)
-        
         drt=remove_noise(drt)    
 
         df1=pd.DataFrame(columns=['prikey', 'Key', 'Survey Duration', 'User', 'Upload Time',

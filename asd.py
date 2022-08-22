@@ -43,7 +43,6 @@ def mandal_folder():
 
 def boq_checkup():
 
-
     counter=0
     top= Toplevel(popupRoot)
     top.geometry("980x550")
@@ -66,6 +65,16 @@ def boq_checkup():
 
         j=mandal_file+info
         
+        try:
+            ot=Extract.extract_ot(j)
+            if len(ot.columns)!=18:
+                counter+=1
+                superstring = superstring+str(counter)+" .Number of columns is different (Duplicate/Extra Columns found) in OT MB of "+info+". Count of columns is "+str(len(ot.columns))+"\n"
+                
+        except:
+            counter+=1
+            superstring=superstring+str(counter)+". No OT MB captured in "+info+""". Standard names are "OT","R4_OT","OT MB","R04_T&D"."""+"\n"
+
 
         try:
             blo=Extract.extract_blo(j)
@@ -133,13 +142,13 @@ def boq_checkup():
             drt.rename(columns=columns_,inplace=True)
             drt.reset_index(drop=True,inplace=True)
             for i in range(len(drt)):
-                if type(drt.loc[i,'Duct_dam_ch_from'])==int and type(drt.loc[i,'Duct_dam_ch_to'])==int:
+                if type(drt.loc[i,'Duct_dam_ch_from'])==int and type(drt.loc[i,'Duct_dam_ch_to'])==int and type(drt.loc[i,'Ch_from'])==int and type(drt.loc[i,'Ch_to'])==int:
                     if drt.loc[i,'Duct_dam_ch_from']!=drt.loc[i,'Ch_from'] and drt.loc[i,'Duct_dam_ch_to']!=drt.loc[i,'Ch_to']:
                         counter+=1
                         superstring=superstring+str(counter)+". Please correct chainage error in DRT MB of "+info+"\n"
 
             for i in range(len(drt)):
-                if type(drt.loc[i,'Duct_miss_ch_from'])==int and type(drt.loc[i,'Duct_miss_ch_to'])==int:
+                if type(drt.loc[i,'Duct_miss_ch_from'])==int and type(drt.loc[i,'Duct_miss_ch_to'])==int and type(drt.loc[i,'Ch_from'])==int and type(drt.loc[i,'Ch_to'])==int:
                     if drt.loc[i,'Duct_miss_ch_from']!=drt.loc[i,'Ch_from'] and drt.loc[i,'Duct_miss_ch_to']!=drt.loc[i,'Ch_to']:
                         counter+=1
                         superstring=superstring+str(counter)+". Please correct chainage error in DRT MB of "+info+"\n"
@@ -154,15 +163,7 @@ def boq_checkup():
             counter+=1
             superstring=superstring+str(counter)+". No DRT MB captured in "+info+""". Standard names are "DRT","R09_DRT","R09-DRT","R9_DRT"."""+"\n"
         
-        try:
-            ot=Extract.extract_ot(j)
-            if len(ot.columns)!=18:
-                counter+=1
-                superstring = superstring+str(counter)+" .Number of columns is different (Duplicate/Extra Columns found) in OT MB of "+info+". Count of columns is "+str(len(ot.columns))+"\n"
-                
-        except:
-            counter+=1
-            superstring=superstring+str(counter)+". No OT MB captured in "+info+""". Standard names are "OT","R4_OT","OT MB","R04_T&D"."""+"\n"
+        
 
     text_box = Text(
     top,
