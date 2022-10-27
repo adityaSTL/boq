@@ -9,13 +9,11 @@ from create_table1 import Create_table
 import openpyxl
 import matplotlib.pyplot as plt
 from openpyxl_image_loader import SheetImageLoader
-# import excel2img
 import os
 import os.path
 import tkinter
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-#Parth Pandey12:12 PM
 pd.options.mode.chained_assignment = None
 
 
@@ -183,19 +181,14 @@ def boq_checkup():
     b2.pack()
 
 def boq12():
-    ##Getting BoQ formatted version to write directly
     xfile = openpyxl.load_workbook(file2)
-    #sheet = xfile['GP-Wise BOQ']
     sheet1=xfile['GP-Wise BOQ']
-    #print(len(Sheet1['H']))
-    #print(Sheet1['F3'].value)
-
     mandal_file=file1+'/'
     print("Grabbed mandal location")
-    # print(mandal_file)
-    no=0
-    os.chdir(mandal_file)
-    for info in os.listdir():
+    no=0  # Later used in feeding the data
+    #sorted_mandal=os.chdir(mandal_file)
+    #sorted_mandal=sorted(sorted_mandal)
+    for info in sorted(os.listdir()):
 
         j=mandal_file+info
         print(j)
@@ -205,35 +198,30 @@ def boq12():
             (blo,joint_closer)=Create_table.create_blo(blo)
             #joint_closer.to_csv('Joint_closure.csv')
 
-        #blo.to_csv('blwoing.csv')
-        #print("pas printing")
-
         drt=Extract.extract_drt(j)
         if len(drt)!=0:
             drt=Create_table.create_drt(drt)
             drt.reset_index(drop=True,inplace=True)
-        #print("empty")
-        #print(drt)
 
-        #drt.to_csv('drt12.csv')
         ot=Extract.extract_ot(j)
         if len(ot)!=0:
             ot=Create_table.create_ot(ot)   
-        #ot.to_csv('ot12.csv')
+
         hdd=Extract.extract_hdd(j)
         if len(hdd)!=0:
-            hdd=Create_table.create_hdd(hdd)      
-        #print(joint_closer)
-        s=0
-        fin=0
-        fin1=0
-        temp=0
+            hdd=Create_table.create_hdd(hdd)  
 
+        s=0 #no idea!
+        fin=0 #Missing section sum
+        fin1=0  #Damaged section sum
+        fin50=0
+        fin5=0
+        fintot=0
+        temp=0  #Temp no imp value
+        ####DRT Calculation starts!!!!
+        ##Case 1: SUM From chainage
         try:
-            #print(range(len(drt)))
-            #print(drt.iloc[0])
             sum=0
-            #drt.to_csv('drt133.csv')
             drt=drt.reset_index(drop=True)
             for i in range(len(drt)):
                 ch1=drt.loc[i,'ch_from']
@@ -247,11 +235,11 @@ def boq12():
                 sum=0
 
             print("sum after chaining",sum)
-            #print(sum)
-
             
-
-            ##For missing case -50 agreement    
+        ##Case 2: SUM From missing section
+            ##For missing case -50 agreement  
+            temp=0
+            s=0  
             for i in range(len(drt)):
                 ch1=drt.loc[i,'Duct_miss_ch_from']
                 ch2=drt.loc[i,'Duct_miss_ch_to']
@@ -269,13 +257,15 @@ def boq12():
                     #print(temp,"s is",s,"done")
                     #print(s)
                     if(s>=50):
+                        fin5+=1
+                        fin50+=s
                         s-=50
                         fin+=s
                         s=0
                     elif s<50:
+                        fintot+=s
                         s=0
-                #print(temp," ",s," ",fin," ",ch1," ",ch2," ",ch3)   
-
+            ##Case 3: SUM From damaged section
             ##For damaged case -50 Agreement
             temp=0
             s=0
@@ -316,7 +306,7 @@ def boq12():
         if np.isnan(fin1):
            fin1=0           
         
-        sum+=fin+fin1
+        sum+=fin1
         print("Present value of sum after Chainaing && (mis+dam) case",sum)
 
         print("Missing case",fin,"Dam case",fin1)                
@@ -328,7 +318,8 @@ def boq12():
             print("Sum before starting 0 is ",start_drt-0)
             print("Present value of sum after Chaining && starting case and after (mis+dam) case",sum)
 
-            ##############Calculation Last Blow#########################
+            #####################Calculation Last Blow########################################
+            ##Case 4: SUM From lat blowing and DRT reading mismatch section
             last_blow=blo['Chainage_To'].iloc[-1]
             print("Doing this calc. of last_blowing",last_blow)
             att=pd.isnull(last_blow)
@@ -344,7 +335,7 @@ def boq12():
             print("Final case",last_blow)
             if np.isnan(last_blow):
                 last_blow=0    
-##############################Last BLow Calculation################################
+            ##############################Last BLow Calculation################################
 
             ###################Last DRT Calculation#####################           
             last_drt=drt['ch_to'].iloc[-1]
@@ -366,14 +357,19 @@ def boq12():
             print("Doing last cal of last drt",last_drt)
             sum+=last_blow-last_drt
             print("Final Sum is ",sum)    
-            #ot.to_csv('ot12.csv')    
-            #print(sheet[chr(ord('F')+no)+'9'])
+            
         
         except:
             print('Something wrong in blowing gap calculation or drt file')    
+        
+        ##DRT Calculation over!!!!!!
+        ######################################################################################################################################
+        ######################################################################################################################################
+            
 
+        ###Feeeding the data starts!!!    
+        #no=0
         var='F'
-        #var1=chr(ord(var)+1+2*no)
         if no<=10:
             var=chr(ord(var)+2*no)
         elif no>10:
@@ -404,10 +400,13 @@ def boq12():
         try:
             if len(drt)!=0 and sum==0:
                 sheet1[var+'22']=sum/1000
+                #sheet1[var+'139']=fin/1000
+                sheet1[var+'137']=(fin50 + fintot)/1000
+                sheet1[var+'138']=(fin5*50)/1000
+                
                 a=(drt['Duct_miss_ch_Length']==0)
                 b=~(drt['Duct_miss_ch_Length'].astype(str).str.isdigit())
                 y=a+b
-                #print(a+b)
                 print("Dit length only miss",drt.loc[y,'Length'].sum()/1000)
                 c=(drt['Duct_dam_punct_loc_Length']==0)
                 d=~(drt['Duct_dam_punct_loc_Length'].astype(str).str.isdigit())
@@ -420,8 +419,8 @@ def boq12():
 
                 e=y*z
                 print("Dit length",drt.loc[e,'Length'].sum()/1000)
-                sheet1[var+'99']=drt.loc[e,'Length'].sum()/1000
-                #sheet1[var+'22']=sum/1000
+                sheet1[var+'98']=drt.loc[e,'Length'].sum()/1000
+                #sheet1[var+'21']=sum/1000
                 print("Duct laid",sum)
 
             elif len(drt)==0 and sum==0:
@@ -430,6 +429,9 @@ def boq12():
                 print("No drt case+no sum case",sum)
                 sheet1[var+'99']=0
                 sheet1[var+'22']=sum/1000
+                sheet1[var+'138']=(fin5*50)/1000
+                sheet1[var+'137']=(fin50 + fintot)/1000
+                #sheet1[var+'138']=(fin5*50)/1000
 
             else:    
                 a=(drt['Duct_miss_ch_Length']==0)
@@ -450,6 +452,9 @@ def boq12():
                 print("Dit length",drt.loc[e,'Length'].sum()/1000)
                 sheet1[var+'99']=drt.loc[e,'Length'].sum()/1000
                 sheet1[var+'22']=sum/1000
+                sheet1[var+'138']=(fin5*50)/1000
+                sheet1[var+'137']=(fin50 + fintot)/1000
+                #sheet1[var+'138']=(fin5*50)/1000
                 print("Duct laid",sum)
         except:
             print("No such DRT files..")
