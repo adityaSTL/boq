@@ -487,8 +487,8 @@ def boq_checkup():
     if os.path.exists(mandal_file+"BOQ122.xlsx"):
         #print("123")
         counter+=1
-        superstring=superstring+str(counter)+". Removed the already present BoQ122.xlsx file in Mandal Folder"+"\n"
-        os.remove(mandal_file+"BOQ122.xlsx")
+        superstring=superstring+str(counter)+". Remove the already present BoQ122.xlsx file in Mandal Folder"+"\n"
+        #os.remove(mandal_file+"BOQ122.xlsx")
 
     os.chdir(mandal_file)
     
@@ -497,10 +497,16 @@ def boq_checkup():
         j=mandal_file+info
         
         ###Summary checkup
-        summary=pd.read_excel(j)
+        summary=pd.read_excel(j,sheet_name='Summary')
+        if len(summary)==0:
+            counter+=1
+            superstring = superstring+str(counter)+" .No Summary sheet found. Please make summary sheet in "+info+"\n"
 
         ###Missing Chainages Checkup
-        missing_chainages=pd.read_excel(j)
+        missing_chainages=pd.read_excel(j,sheet_name='Missing Chainages')
+        if len(missing_chainages)==0:
+            counter+=1
+            superstring = superstring+str(counter)+" .No Missing Chainages sheet found. Please make the sheet in "+info+"\n"
 
 
         try:
@@ -651,7 +657,10 @@ def boq12():
         if len(hdd)!=0:
             hdd=Create_table.create_hdd(hdd)  
 
-        mix_mb(j)
+        try:
+            mix_mb(j)
+        except:
+            print("Can't do calculation in summary sheet. Some Error")    
 
         s=0 #no idea!
         fin=0 #Missing section sum
