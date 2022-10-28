@@ -1,0 +1,16 @@
+A=[[3106, 0, 0, 0, 68, 0], [0, 79, 0, 0, 3, 0], [0, 259, 0, 0, 3, 83], [0, 113, 0, 0, 0, 113], [0, 44, 0, 0, 0, 44], [0, 34, 0, 0, 12, 22], [5, 0, 0, 0, 5, 0]]
+print(A)
+
+
+row=11
+no=48
+for i in A:
+    if (no+row)<58:
+        temp=(chr(no+row))
+        print(no+row,temp)
+        row+=1
+
+    else:
+        temp='1'+ chr((no+row-48)%10+48)
+        print(no+row,temp)
+        row+=1
